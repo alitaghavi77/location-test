@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اشتراک موقعیت</title>
+
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      background: #f2f5f8;
+      padding: 25px;
+      text-align: center;
+    }
+
+    .box {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      max-width: 450px;
+      margin: auto;
+    }
+
+    button {
+      padding: 15px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background: #1677d2;
+      color: white;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 20px;
+      line-height: 2;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>اشتراک موقعیت مکانی</h2>
+
+  <p>
+    با زدن دکمه زیر و تأیید دسترسی،
+    موقعیت مکانی شما دریافت می‌شود.
+  </p>
+
+  <button onclick="getLocation()">اشتراک موقعیت من</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+function getLocation() {
+  const result = document.getElementById("result");
+
+  if (!navigator.geolocation) {
+    result.innerText = "مرورگر شما امکان دریافت موقعیت را ندارد.";
+    return;
+  }
+
+  result.innerText = "در حال دریافت موقعیت GPS...";
+
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const accuracy = position.coords.accuracy;
+
+      result.innerHTML = 
+        <h3>موقعیت دریافت شد ✅</h3>
+        عرض جغرافیایی: ${lat}<br>
+        طول جغرافیایی: ${lon}<br>
+        دقت تخمینی: ${accuracy} متر<br><br>
+
+        <a target="_blank"
+           href="https://www.google.com/maps?q=${lat},${lon}">
+           مشاهده موقعیت روی Google Maps
+        </a>
+      ;
+    },
+
+    function(error) {
+      switch(error.code) {
+        case 1:
+          result.innerText = "دسترسی به موقعیت رد شد.";
+          break;
+        case 2:
+          result.innerText = "موقعیت قابل دریافت نیست.";
+          break;
+        case 3:
+          result.innerText = "زمان دریافت GPS به پایان رسید.";
+          break;
+        default:
+          result.innerText = "خطای نامشخص رخ داد.";
+      }
+    },
+
+    {
+      enableHighAccuracy: true,
+      timeout: 30000,
+      maximumAge: 0
+    }
+  );
+}
+</script>
+
+</body>
+</html>
